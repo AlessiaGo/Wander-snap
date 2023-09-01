@@ -1,8 +1,9 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block content%}
 <!-- Showcase -->
-<section
-  id="showcase" style="min-height: 250px !important;"
->
+<section id="showcase" style="min-height: 250px !important">
   <div class="container text-center">
     <div class="home-search p-1">
       <div class="overlay p-5" style="min-height: 200px !important">
@@ -34,11 +35,11 @@
               <div class="col-md-4 mb-3">
                 <label class="sr-only">State</label>
                 <input
-                type="text"
-                name="state"
-                class="form-control"
-                placeholder="State"
-              />
+                  type="text"
+                  name="state"
+                  class="form-control"
+                  placeholder="State"
+                />
               </div>
             </div>
             <button class="btn btn-secondary btn-block mt-4" type="submit">
@@ -56,117 +57,60 @@
   <div class="container">
     <h3 class="text-center mb-3">Preview</h3>
     <div class="row">
-      <!-- Listing 1 -->
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card listing-preview">
-          <img class="card-img-top" src="assets/img/homes/home-1.jpg" alt="" />
-          <div class="card-img-overlay">
-            <h2>
-              <span class="badge badge-secondary text-white">$490,000</span>
-            </h2>
-          </div>
-          <div class="card-body">
-            <div class="listing-heading text-center">
-              <h4 class="text-primary">45 Drivewood Circle</h4>
-              <p>
-                <i class="fas fa-map-marker text-secondary"></i> Norwood MA,
-                02062
-              </p>
-            </div>
-            <hr />
-            <div class="row py-2 text-secondary">
-              <div class="col-6">
-                <i class="fas fa-th-large"></i> Sqft: 2500
+      {% if listings %}
+      {% for listing in listings %}
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card listing-preview">
+            <img
+              class="card-img-top"
+              src="{{ listing.photo_main.url }}"
+              alt=""
+              style="max-height: 200px !important"
+            />
+            <div class="card-body">
+              <div class="listing-heading text-center">
+                <h4 class="text-primary">{{ listing.title }}</h4>
+                <p>
+                  <i class="fas fa-map-marker text-secondary"></i>
+                  {{listing.city}}, {{listing.state}}
+                </p>
               </div>
-              <div class="col-6"><i class="fas fa-car"></i> Garage: 2</div>
-            </div>
-            <div class="row py-2 text-secondary">
-              <div class="col-6"><i class="fas fa-bed"></i> Bedrooms: 3</div>
-              <div class="col-6"><i class="fas fa-bath"></i> Bathrooms: 2</div>
-            </div>
-            <hr />
-            <div class="row py-2 text-secondary">
-              <div class="col-6"><i class="fas fa-user"></i> Kyle Brown</div>
-            </div>
-            <div class="row text-secondary pb-2">
-              <div class="col-6"><i class="fas fa-clock"></i> 5 days ago</div>
-            </div>
-            <hr />
-            <a href="listing.html" class="btn btn-primary btn-block"
-              >More Info</a
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- Listing 2 -->
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card listing-preview">
-          <img class="card-img-top" src="{% static 'img/sfondoWander.jpg' %}" alt="" />
-          <div class="card-body">
-            <div class="listing-heading text-center">
-              <h4 class="text-primary">18 Jefferson Lane</h4>
-              <p>
-                <i class="fas fa-map-marker text-secondary"></i> Woburn MA,
-                01801
-              </p>
-            </div>
-            <hr />
-            <div class="row py-2 text-secondary">
-              <div class="col-12"><i class="fas fa-user"></i> Mark Hudson</div>
-            </div>
-            <div class="row py-2 text-secondary">
-              <p class="ml-3" style="font: small;">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quos animi inventore modi quisquam similique, illum quidem voluptatem, dolor praesentium recusandae eos. Laborum et veritatis temporibus dicta tenetur facilis ut labore.</p>
-            </div>
-            <hr />
-            <a href="listing.html" class="btn btn-primary btn-block"
-              >More Info</a
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- Listing 3 -->
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card listing-preview">
-          <img class="card-img-top" src="assets/img/homes/home-3.jpg" alt="" />
-          <div class="card-img-overlay">
-            <h2>
-              <span class="badge badge-secondary text-white">$580,000</span>
-            </h2>
-          </div>
-          <div class="card-body">
-            <div class="listing-heading text-center">
-              <h4 class="text-primary">187 Woodrow Street</h4>
-              <p>
-                <i class="fas fa-map-marker text-secondary"></i> Salem MA, 01915
-              </p>
-            </div>
-            <hr />
-            <div class="row py-2 text-secondary">
-              <div class="col-6">
-                <i class="fas fa-th-large"></i> Sqft: 3107
+              <hr />
+              <div class="row py-2 text-secondary">
+                <div class="col-12">
+                  <i class="fas fa-user"></i> {{ listing.creator }}
+                </div>
               </div>
-              <div class="col-6"><i class="fas fa-car"></i> Garage: 0</div>
+              <div class="row py-2 text-secondary">
+                <p
+                  class="ml-3"
+                  style="
+                    color: black;
+                    font: small;
+                    width: 250px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
+                  {{ listing.description }}
+                </p>
+              </div>
+              <hr />
+              <a
+                href="{% url 'listing' listing.id %}"
+                class="btn btn-primary btn-block"
+                >More Info</a
+              >
             </div>
-            <div class="row py-2 text-secondary">
-              <div class="col-6"><i class="fas fa-bed"></i> Bedrooms: 4</div>
-              <div class="col-6"><i class="fas fa-bath"></i> Bathrooms: 3</div>
-            </div>
-            <hr />
-            <div class="row py-2 text-secondary">
-              <div class="col-6"><i class="fas fa-user"></i> Mark Hudson</div>
-            </div>
-            <div class="row text-secondary pb-2">
-              <div class="col-6"><i class="fas fa-clock"></i> 5 days ago</div>
-            </div>
-            <hr />
-            <a href="listing.html" class="btn btn-primary btn-block"
-              >More Info</a
-            >
           </div>
         </div>
-      </div>
+      {% endfor %}
+      {% else %}
+        <div class="col-md-12">
+          <p>No Listings Available</p>
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>
